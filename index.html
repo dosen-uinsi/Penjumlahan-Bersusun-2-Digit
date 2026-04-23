@@ -26,7 +26,7 @@
         .control-panel {
             background: white; padding: 20px; border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
-            width: 100%; max-width: 440px; /* Diubah agar fleksibel di layar kecil */
+            width: 100%; max-width: 440px; 
             margin-bottom: 20px; border-top: 5px solid #3b82f6;
         }
 
@@ -47,7 +47,14 @@
         
         select.level-select {
             width: 100%; padding: 10px; font-size: 16px; font-weight: bold; color: #1e293b;
-            border: 2px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; cursor: pointer;
+            border: 2px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px; cursor: pointer;
+        }
+
+        /* Tampilan Soal di Mode Latihan */
+        .soal-display {
+            font-size: 28px; font-weight: 900; color: #1e293b; background: #f1f5f9;
+            padding: 10px; border-radius: 8px; margin-bottom: 15px;
+            letter-spacing: 2px; border: 2px dashed #cbd5e1;
         }
 
         button {
@@ -68,7 +75,7 @@
         .key {
             background: #e2e8f0; color: #1e293b; padding: 12px 0; border-radius: 8px;
             font-size: 20px; font-weight: bold; cursor: pointer; user-select: none; border: none;
-            touch-action: manipulation; /* Mencegah delay di mobile */
+            touch-action: manipulation; 
         }
         .key:active { background: #cbd5e1; }
         .key-del { background: #ef4444; color: white; }
@@ -85,7 +92,7 @@
             background: #e64545; border-radius: 25px;
             box-shadow: inset 2px 2px 8px rgba(255,255,255,0.2), 0 15px 35px rgba(0,0,0,0.2);
             overflow: hidden;
-            transform-origin: top center; /* Titik acuan saat papan diskalakan */
+            transform-origin: top center; 
         }
 
         .label { position: absolute; top: 15px; font-size: 24px; font-weight: 800; color: #8b1e1e; z-index: 5; }
@@ -101,7 +108,6 @@
             font-size: 44px; font-weight: 700; z-index: 3; transition: all 0.2s;
         }
 
-        /* PENGECUALIAN TRANSISI UNTUK KOTAK HASIL SIMPANAN AGAR TIDAK KEDIP */
         #top-carry-result { transition: none !important; }
 
         /* Kordinat */
@@ -153,30 +159,22 @@
         @keyframes followPath { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
 
         /* ========================================= */
-        /* PENGATURAN RESPONSIF (HP & LAYAR KECIL)   */
+        /* PENGATURAN RESPONSIF                      */
         /* ========================================= */
         
-        /* Layar HP Medium (Lebar < 480px) */
         @media (max-width: 480px) {
             body { padding: 10px; }
             .main-header h1 { font-size: 24px; }
-            
-            /* Skalakan papan menjadi 85%, kurangi margin bawah agar tidak ada ruang kosong */
             .calc-board { transform: scale(0.85); margin-bottom: -69px; }
         }
 
-        /* Layar HP Kecil (Lebar < 400px) */
         @media (max-width: 400px) {
             .tab-btn { font-size: 12px; padding: 10px 2px; }
-            
-            /* Skalakan papan menjadi 75% */
             .calc-board { transform: scale(0.75); margin-bottom: -115px; }
             .key { font-size: 18px; padding: 10px 0; }
         }
 
-        /* Layar HP Sangat Kecil (Lebar < 340px) */
         @media (max-width: 340px) {
-            /* Skalakan papan menjadi 65% */
             .calc-board { transform: scale(0.65); margin-bottom: -161px; }
         }
     </style>
@@ -205,10 +203,11 @@
         </div>
 
         <div id="section-latihan" style="display: none;">
-            <select class="level-select" id="latihan-type">
+            <select class="level-select" id="latihan-type" onchange="generateRandomSoal()">
                 <option value="2d2d">Operasi: 2 Digit + 2 Digit</option>
                 <option value="2d1d">Operasi: 2 Digit + 1 Digit</option>
             </select>
+            <div class="soal-display" id="latihan-soal-text">-- + -- = ?</div>
             <button class="btn-random" onclick="generateRandomSoal()">Mulai Soal Acak Baru</button>
         </div>
 
@@ -368,6 +367,9 @@
             let v1 = Math.floor(Math.random() * 90) + 10; 
             let v2 = (type === '2d1d') ? (Math.floor(Math.random() * 9) + 1) : (Math.floor(Math.random() * 90) + 10);
             
+            // Perbarui Teks Soal di Panel
+            document.getElementById('latihan-soal-text').innerText = v1 + " + " + v2 + " = ?";
+
             parseAndDraw(v1, v2);
             cleanBoard();
             startLatihanTahap1();
@@ -455,7 +457,7 @@
                 let actualR = Math.floor(sumP/10);
 
                 if(userP === actualP && userR === actualR) {
-                    showMsg("Luar Biasa! Jawaban Akhir Benar 🎉", true);
+                    showMsg("Luar Biasa! Jawaban Akhir Benar 👍", true);
                     document.getElementById('res-puluhan').classList.remove('input-slot', 'active-slot');
                     document.getElementById('res-ratusan').classList.remove('input-slot', 'active-slot');
                     document.getElementById('numpad-ui').style.display = 'none';
